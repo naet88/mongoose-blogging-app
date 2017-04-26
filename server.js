@@ -93,9 +93,9 @@ app.post('/posts', (req, res) => {
 })
 
 
-app.put('/posts/:id', (req, res) => {
+// app.put('/posts/:id', (req, res) => {
 	
-});
+// });
 
 let server;
 
