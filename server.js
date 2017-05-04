@@ -93,9 +93,41 @@ app.post('/posts', (req, res) => {
 })
 
 
-// app.put('/posts/:id', (req, res) => {
-	
-// });
+app.put('/posts/:id', (req, res) => {
+	//first make sure that the id in the req body and req in the path match. 
+	if(!(req.params.id === req.body.id)) {
+		const message = (
+			`request path id (${req.params.id}) and request body id ` +
+			`(${req.body.id}) must match`);
+		console.error(message);
+		res.status(400).json({message: message});
+		}
+		
+		//create updateable object
+
+		const toUpdate = {};
+		const updateableFields = ['title', 'author', 'content'];
+
+		updateableFields.forEach(field => {
+			if (field in req.body) {
+				toUpdate[field] = req.body[field];
+			}
+		});
+		
+		Blogpost
+			.findByIdAndUpdate(req.params.id, {$set: toUpdate})
+			.exec()
+			.then(blogpost => res.status(204).end())
+			.catch(err => res.status(500).json({message: 'internal server error'}));
+});
+
+app.delete('/posts/:id', (req, res) => {
+	Blogpost
+		.findByIdAndRemove(req.params.id)
+		.exec()
+		.then(blogpost => res.status(204).end())
+		.catch(err => res.status(500).json({message: 'internal server error'}));
+});
 
 let server;
 
